@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - Magnifico Login do Manuel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <header>
+        <h1>Magnifico Login do Manuel</h1>
+    </header>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+<footer class="site-footer">
+    <div class="container">
+        <p>&copy; {{ current_year }} Catamaran Software. All rights reserved.</p>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</footer>
+</body>
+</html>

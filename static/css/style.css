@@ -76,3 +76,33 @@ html, body {
     background-color: #f0f0f0;
     font-size: 0.8em;
 }
+
+.btn-custom {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.btn-custom-account {
+    display: inline-block;
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.btn-custom-google {
+    display: inline-block;
+    background-color: #db4437;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+}

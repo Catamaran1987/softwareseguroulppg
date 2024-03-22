@@ -7,7 +7,7 @@ from datetime import datetime
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from bleach import clean
-
+from authlib.integrations.flask_client import OAuth
 
 app = Flask(__name__)
 app.config['SESSION_COOKIE_SECURE'] = True
@@ -22,11 +22,48 @@ limiter = Limiter(
     key_func=get_remote_address
 )
 
+app.config['GOOGLE_CLIENT_ID'] = '396993958909-k5lq5irfo9h563gouibbt1bde2masu4l.apps.googleusercontent.com'
+app.config['GOOGLE_CLIENT_SECRET'] = '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'
+app.config['OAUTH_CREDENTIALS'] = {
+    'google': {
+        'id': app.config['GOOGLE_CLIENT_ID'],
+        'secret': app.config['GOOGLE_CLIENT_SECRET']
+    }
+}
+
+oauth = OAuth(app)
+google = oauth.register(
+    name='google',
+    client_id=app.config['GOOGLE_CLIENT_ID'],
+    client_secret=app.config['GOOGLE_CLIENT_SECRET'],
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    access_token_params=None,
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    authorize_params=None,
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    client_kwargs={'scope': 'openid email profile'},
+)
+
 
 @app.route('/')
 @limiter.limit("5 per minute")
 def index():
     return render_template('index.html')
+
+
+@app.route('/login/google')
+def login_google():
+    redirect_uri = url_for('authorize_google', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+@app.route('/login/google/authorize')
+def authorize_google():
+    token = google.authorize_access_token()
+    resp = google.get('userinfo')
+    user_info = resp.json()
+    session['username'] = user_info['email']
+    flash('Login successful!', 'success')
+    return redirect(url_for('logged_in'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
